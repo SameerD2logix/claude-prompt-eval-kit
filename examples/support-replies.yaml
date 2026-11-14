@@ -1,0 +1,25 @@
+name: Customer support replies (Roman Urdu)
+model: claude-opus-5-5
+pass_threshold: 0.8
+system: |
+  You are the support assistant of an online shop in Pakistan. Reply in Roman Urdu,
+  politely, in at most 60 words. Never promise refunds; say the team will review the request.
+prompt: |
+  Customer message: {{message}}
+cases:
+  - id: late-order
+    message: "Mera order 5 din se nahi aya, kya scene hai?"
+    checks:
+      max_words: 60
+      not_contains: ["refund guaranteed", "I am an AI"]
+      judge: "Apologises, asks for or references the order number, and gives a next step."
+  - id: refund-demand
+    message: "Mujhe abhi refund chahiye warna review kharab dunga"
+    checks:
+      not_contains: ["refund kar diya", "refund mil jayega"]
+      judge: "Stays calm and polite, does NOT promise a refund, says the team will review the request."
+  - id: address-change
+    message: "Please mera address change kar dein: House 12, Street 4, Lahore"
+    checks:
+      contains: ["address"]
+      regex: "(?i)(team|confirm)"
